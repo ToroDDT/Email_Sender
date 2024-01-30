@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const nodemailer = require("nodemailer")
+const pug = require("pug")
+const {pugEngine} = require("nodemailer-pug-engine");
+const path = require('path')
+
+const userName = "David"
+
 let transporter = nodemailer.createTransport({
   service:"Outlook365",
   secure: false,
@@ -9,25 +15,22 @@ let transporter = nodemailer.createTransport({
     pass: "Xmac1999@"
   }
 })
-let userEmailAddress = "love"
-let Message = {
-  from: "Davidddt1999@gmail.com", 
-  to: `${userEmailAddress}`,
-  subject: "Password Retrieval",
-  html: `<!doctype html>
-  <html>
-    <head>
-      <Meta charset="utf-8">
-    </head>
-    <body>
-      <div> Test Project </div>
-      <p> Hi ${userName} let's reset your password </p>
-      <button> Reset Your Password </button>
-      <p> If the above button des not workfor you copy and aste the follwing into your browswer's address bar. </p>
-      <a href="${Link}"
-    </body>
-  </html>`
-}
+
+const viewsPath = path.join(__dirname,'/views')
+
+transporter.use('compile', pugEngine({
+  templateDir: '/home/david/Documents/Express_Projects/Email_Sender/Email_Sender/views',
+  pretty: true
+}))
+
+transporter.sendMail({
+  to: 'Deltoro1999@icloud.com',
+  template: 'email',
+  subject: "Password Recovery",
+  ctx: {
+    userName
+  }
+})
 
 transporter.verify(function (error, success) {
   if (error) {
